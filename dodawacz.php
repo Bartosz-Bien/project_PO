@@ -98,7 +98,7 @@ if (isset ($_GET['submit_2']))
     $sql = "INSERT INTO towary 
             (ID_towaru, Nazwa_towaru, Ilosc, J_m, Cena_zakupu_zl, Marza, Cena_sprzedazy_netto_zl, Cena_sprzedazy_brutto_zl, Podatek)
             VALUES
-            (NULL, '$nazwa_towaru', $ilosc, $jednostka_miary, $cena_netto_zakupu, $marza, $cena_netto_sprzedazy, $cena_brutto_sprzedazy, $podatek)";					
+            (NULL, '$nazwa_towaru', ($ilosc * 1000), $jednostka_miary, ($cena_netto_zakupu * 100), ($marza * 100), ($cena_netto_sprzedazy * 100), ($cena_brutto_sprzedazy * 100), $podatek)";					
     $rez = mysqli_query($mysqli, $sql);
     //mysqli_free_result($rez);	
 
