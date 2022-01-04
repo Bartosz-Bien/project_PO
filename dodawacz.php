@@ -94,13 +94,14 @@ if (isset ($_GET['submit_2']))
     $cena_netto_sprzedazy = round($cena_netto_sprzedazy, 2);
 
     // dodanie do bazy
-    mysqli = mysqli_connect("localhost", "root", "", "sklad_budowlany");	
+    $mysqli = mysqli_connect("localhost", "root", "", "sklad_budowlany");	
     $sql = "INSERT INTO towary 
-            (ID_towaru, Nazwa_towaru, Ilosc, J.m, Cena_zakupu_zl, Marza, Cena_sprzedazy_netto_zl, Cena_sprzedazy_brutto_zl, Podatek%)
+            (ID_towaru, Nazwa_towaru, Ilosc, J_m, Cena_zakupu_zl, Marza, Cena_sprzedazy_netto_zl, Cena_sprzedazy_brutto_zl, Podatek)
             VALUES
             (NULL, '$nazwa_towaru', $ilosc, $jednostka_miary, $cena_netto_zakupu, $marza, $cena_netto_sprzedazy, $cena_brutto_sprzedazy, $podatek)";					
     $rez = mysqli_query($mysqli, $sql);
-    mysqli_free_result($rez);	
+    //mysqli_free_result($rez);	
+
    
     // info dla pracownika o dodaniu 
     print '<p>Dodano towar o nazwie ' . $nazwa_towaru . '<br>w ilości ' . $ilosc . '<br>w cenie netto zakupu ' . $cena_netto_zakupu . '<br>o marży ' . $marza . '<br> i podatku ' . $podatek . '</p>';
