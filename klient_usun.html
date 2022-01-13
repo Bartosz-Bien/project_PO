@@ -1,0 +1,20 @@
+<HTML>
+    <HEAD>
+      <TITLE>
+        Usuń klienta
+      </TITLE>
+    </HEAD>
+  
+    <BODY>
+        <?php
+        include 'klient_php.php';
+  
+        echo 'Usuń klienta:';
+
+        $inst = Klient::get_instance();
+        $inst->usun();
+
+        ?>
+  
+    </BODY>
+  </HTML>

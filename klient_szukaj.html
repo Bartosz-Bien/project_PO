@@ -1,0 +1,29 @@
+<HTML>
+    <HEAD>
+      <TITLE>
+        Szukaj klienta
+      </TITLE>
+    </HEAD>
+  
+    <BODY>
+  
+      <?php
+        include 'klient_php.php';
+  
+        echo 'Wyszukaj:';
+        print '<form  action ="klient_szukaj.html" method="POST">';
+          print '<input style="width: 30%" type="text" name="szuk" placeholder="Szukana nazwa osoby lub firmy"/><br><br>';
+          print '<br><br><input style="margin-left: 10%;" type="submit" name="save"/>';
+        print '</form>';
+  
+        if (isset($_POST['save']))
+        {
+            $inst = Klient::get_instance();
+            $inst->czy_w_bazie();
+
+            print '<a href="klient_nowy.html">Jeśli nie znalazłeś pasującego wyniku, utwórz go tutaj</a>';
+        }
+      ?>
+  
+    </BODY>
+  </HTML>
