@@ -1,0 +1,20 @@
+<HTML>
+    <HEAD>
+      <TITLE>
+        Zamówienie materiału
+      </TITLE>
+    </HEAD>
+  
+    <BODY>
+        <?php
+        include 'zam_php.php';
+  
+        echo 'Zamów materiał:';
+
+        $inst = Zamowienie::get_instance();
+        $inst->skompletuj_zamowienie();
+
+        ?>
+  
+    </BODY>
+  </HTML>
