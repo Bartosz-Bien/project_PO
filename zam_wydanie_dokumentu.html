@@ -1,0 +1,20 @@
+<HTML>
+    <HEAD>
+      <TITLE>
+        Wydanie materiału potwierdzającego
+      </TITLE>
+    </HEAD>
+  
+    <BODY>
+        <?php
+        include 'zam_php.php';
+  
+
+        $inst = Zamowienie::get_instance();
+        $inst->otrzymanie_dokumentu_potwierdzajacego();
+    
+
+        ?>
+  
+    </BODY>
+  </HTML>

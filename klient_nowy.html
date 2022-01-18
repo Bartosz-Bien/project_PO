@@ -1,0 +1,47 @@
+<HTML>
+    <HEAD>
+      <TITLE>
+        Nowy klient
+      </TITLE>
+    </HEAD>
+  
+    <BODY>
+  
+      <?php
+        include 'klient_php.php';
+  
+        // dodanie do bazy
+        echo 'Dodaj:';
+        print '<form action ="klient_nowy.html" method="POST">';
+          print '<input type="radio" name="type" value="ind"/><label for="ind">Klient indywidualny</label></br>';
+          print '<input type="radio" name="type" value="fir"/><label for="fir">Firma</label></br>';
+          print '<br><br><input style="margin-left: 10%;" type="submit" name="save"/>';
+        print '</form>';
+  
+        if (isset($_POST['save']) and $_POST['type']=="ind")
+        {
+            $inst = Klient_indywidualny::get_instance();
+            echo "Dodanie klienta indywidualnego<br>";
+            $inst->form();
+        }
+        if(isset ($_POST['submit_ind']))
+        {
+            $inst = Klient_indywidualny::get_instance();
+            $inst->dodaj();
+        }
+  
+        if (isset($_POST['save']) and $_POST['type']=="fir")
+        {
+            $inst = Firma::get_instance();
+            echo "Dodanie firmy<br>";
+            $inst->form();            
+        }
+        if(isset ($_POST['submit_fir']))
+        {
+            $inst = Firma::get_instance();
+            $inst->dodaj();
+        }
+      ?>
+  
+    </BODY>
+  </HTML>

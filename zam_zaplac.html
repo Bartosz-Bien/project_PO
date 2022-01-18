@@ -1,0 +1,20 @@
+<HTML>
+    <HEAD>
+      <TITLE>
+        Zapłać
+      </TITLE>
+    </HEAD>
+  
+    <BODY>
+        <?php
+        include 'zam_php.php';
+  
+        echo 'Zapłać:';
+
+        $inst = Zamowienie::get_instance();
+        $inst->zaplac();
+
+        ?>
+  
+    </BODY>
+  </HTML>
