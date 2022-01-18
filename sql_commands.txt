@@ -1,0 +1,14 @@
+select * from ksiazki order by tytul asc;
+
+select * from ksiazki order by cena desc limit 1;
+
+select * from ksiazki where tytul like "%PHP%";
+
+select klienci.imie, klienci.nazwisko, zamowienia.idzamowienia, zamowienia.data from klienci, zamowienia where klienci.idklienta = zamowienia.idklienta;
+
+select klienci.imie, klienci.nazwisko from klienci, zamowienia, ksiazki where klienci.idklienta = zamowienia.idklienta and zamowienia.idksiazki = ksiazki.idksiazki and zamowienia.idksiazki=2;
+
+select ksiazki.tytul, ksiazki.imieautora, ksiazki.nazwiskoautora from ksiazki, klienci, zamowienia where klienci.idklienta = zamowienia.idklienta and zamowienia.idksiazki = ksiazki.idksiazki and klienci.imie="Jan" and klienci.nazwisko="Nowak";
+
+select klienci.imie , klienci.nazwisko , zamowienia.idzamowienia, zamowienia.data, zamowienia.status, ksiazki.tytul from klienci, zamowienia, ksiazki where klienci.idklienta = zamowienia.idklienta and zamowienia.idksiazki = ksiazki.idksiazki and klienci.nazwisko="Rutkowski" order by data desc;
+
