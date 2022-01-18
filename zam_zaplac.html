@@ -1,7 +1,7 @@
 <HTML>
     <HEAD>
       <TITLE>
-        Zamówienie materiału
+        Zapłać
       </TITLE>
     </HEAD>
   
@@ -9,11 +9,10 @@
         <?php
         include 'zam_php.php';
   
-        echo 'Zamów materiał:';
+        echo 'Zapłać:';
 
         $inst = Zamowienie::get_instance();
-        $inst->skompletuj_zamowienie();
-    
+        $inst->zaplac();
 
         ?>
   

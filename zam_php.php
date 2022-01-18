@@ -1,28 +1,5 @@
 <?php
 
-    // function pokaz_klient($rez)
-    // {
-    //     print '<table style="margin-top: 0%; margin-left: 0%; width: 80%" align="center" style="border: 5px solid #006994;border-collapse:collapse;">';
-    //     print '<tr style="background-color:#878787";><td style="width:40px;">Id</td><td>NIP</td><td>Nazwa</td><td>Ulica</td><td>Numer domu</td><td>Numer mieszkania</td><td>Kod pocztowy</td><td>Poczta</td><td>Kraj</td></tr>';
-
-    //     while ($newArray = mysqli_fetch_array($rez, MYSQLI_ASSOC))
-    //     {
-    //         print '<tr>';
-    //         print '<td>'; echo $newArray['ID_klienta']; echo " "; print '</td>';
-    //         print '<td>'; echo $newArray['NIP']; echo " "; print '</td>';
-    //         print '<td>'; echo $newArray['Nazwa']; echo " "; print '</td>';
-    //         print '<td>'; echo $newArray['Ulica']; echo " "; print '</td>';
-    //         print '<td>'; echo $newArray['Numer_domu']; echo " "; print '</td>';
-    //         print '<td>'; echo $newArray['Numer_mieszkania']; echo " "; print '</td>';
-    //         print '<td>'; echo $newArray['Kod_pocztowy']; echo " "; print '</td>';
-    //         print '<td>'; echo $newArray['Poczta']; echo " "; print '</td>';
-    //         print '<td>'; echo $newArray['Kraj']; echo " "; print '</td>';
-    //         print '</tr>';
-    //     }
-    //     print '</table>';
-    //     print '<br><br><br><br><br>';
-    // }
-
     class Zamowienie 
     {
         // singleton stuff
@@ -41,42 +18,72 @@
 
         public function zaplac() // do implementacji w czesci pracownika - pracownik anuluje dlug, ale klasa zamowienie
         {
-            echo 'zaplac';
+            // echo 'zaplac';
             // uzytkownik podchodzi do pracownika i pyta czy moze zaplacic dlug wzgledem sklepu
             // 1. program sprawdza w bazie dlug uzytkownika (ale tylko firma moze placic po czasie) o tym nip/adresie/etc i wyswietla
             // 2. pracownik wprowadza splacona kwote
             // 3. program odejmuje od dlugu (zmienna w metodzie) kwote i aktualizuje rekord w tabeli 'klienci' o tym id
             // 4. koniec - klient odchodzi
+
+            $mysqli = mysqli_connect("localhost", "root", "", "po");
+            $sql = "SELECT * FROM zamowienie";       
+            $rez = mysqli_query($mysqli, $sql); 
+				
+            print '<form style="margin-top: 0%;" method="POST">';
+            print '<select style="width: 300px;" name="er">';
+            print '<option> -- Wybierz zamówienie z listy -- </option>';
+            while ($row = mysqli_fetch_array($rez))
+            {
+                echo "<option> $row[ID_zamowienia] | $row[ID_klienta_zam] | $row[ID_towaru_zam] | $row[Dlug] </option>";
+            }
+            print '</select>';	
+            //print '<br><br><button style="margin-left: 30%" type="submit" name="save">POTWIERDŹ </button>';
+            
+            print '<p>Wpisz kwotę do zapłaty:</p>';
+            print '<input type="number" name="dl" placeholder="Kwota zaplacona"/><br><br>';
+            print '<br><br><input style="margin-left: 25%;" type="submit" name="save"/>';
+            print '</form>';
+            mysqli_free_result($rez);
+
+            if(isset($_POST['save']))
+            {
+                $id = $_POST['er'];
+                $kwota = $_POST['dl'];
+                $id = $id[0];
+
+                $sql_2 = "SELECT Dlug FROM zamowienie WHERE $id=ID_zamowienia";
+                $rez_2 = mysqli_query($mysqli, $sql_2); 
+                $row_2 = mysqli_fetch_array($rez_2);
+
+                $kwota = $row_2['Dlug'] - $kwota;
+
+                $sql_3 = "UPDATE zamowienie SET Dlug = $kwota WHERE ID_zamowienia=$id";
+                mysqli_query($mysqli, $sql_3);
+            }
+              
+
         }
 
-        public function usun() // powiazane z zaplac()
-        {
-            // $mysqli = mysqli_connect("localhost", "root", "", "po");					
-            // $sql = "SELECT ID_klienta, Nazwa FROM klient ORDER BY Nazwa ASC";					
-            // $rez = mysqli_query($mysqli, $sql);
-    
-            // print '<form style="margin-top: 0%;" method="POST">';
-            // print '<select name="er">';
-            // print '<option> -- Wybierz konto z listy -- </option>';
-            // while ($row = mysqli_fetch_array($rez))
-            // {
-            //     echo "<option> $row[ID_klienta] | $row[Nazwa] </option>";
-            // }
-            // print '</select>';	
-            // print '<br><br><input style="margin-left: 25%;" type="submit" name="save"/>';
-            // print '</form>';
-            // mysqli_free_result($rez);
+        public static function sprawdzenie()
+        {                
+            $tow = $_GET['pr'];
+            $il = $_GET['il'];
+            
+            $mysqli = mysqli_connect("localhost", "root", "", "po");
+            $sql_amount = "SELECT Ilosc from towary WHERE ID_towaru=$il;";
+            $amount = mysqli_query($mysqli, $sql_amount); 
+            $am = mysqli_fetch_array($amount);
+            $am = $am['Ilosc'];
 
-            // if (isset($_POST['save']))
-			// {
-            //     echo "Usunięto:<br>" . $_POST['er'];
+            // echo $am;
 
-            //     $sql_erase = $_POST['er'];
-            //     $sql = "DELETE FROM klient WHERE klient.ID_klienta=$sql_erase[0]*1000+$sql_erase[1]*100+$sql_erase[2]*10+$sql_erase[3]";					
-            //     mysqli_query($mysqli, $sql);
-
-            //     header("Refresh:3");
-            // }
+            if ($am < $il)
+            {
+                $link = "zam_sprawdzenie.html?" . "tow=" . $tow . "&il=" . $il . "&a=" . $am;
+                header('Location:' . $link);
+                return false;
+            }
+            return true;
         }
 
 
@@ -136,27 +143,58 @@
 
             if (isset($_GET['kup']))
             {
+                 self::sprawdzenie();
+                
                 $cena = $_GET['dl'];
                 $tow = $_GET['pr'];
                 $kl = $_GET['id_kl'];
                 $il = $_GET['il'];
+                echo $il;
                 
-                $sql_add = "INSERT INTO zamowienie (ID_zamowienia, ID_klienta_zam, ID_towaru_zam, Dlug) VALUES (NULL, $kl, $tow, $cena);";
+                $sql_add = "INSERT INTO zamowienie (ID_zamowienia, ID_klienta_zam, ID_towaru_zam, Dlug, Ilosc) VALUES (NULL, $kl, $tow, $cena, $il);";
                 mysqli_query($mysqli, $sql_add); 
+                
             }
 
 
             mysqli_free_result($rez);
         }
 
-       // public function przejrzyj_wszytskie_towary() // przeniesienie metody do klasy 'towar', ale wywolana w czesci klienta
-       // {
-       //
-       // }
 
         public function otrzymanie_dokumentu_potwierdzajacego() // w czesci pracownika, na kasie, ale klasa klient
         {
+            
+            print '<form method="POST">';
+            print '<p>Numer klienta::</p>';
+            print '<input type="number" name="id_kl" placeholder="ID klienta"/><br><br>';
+            print '<br><br><input style="margin-left: 25%;" type="submit" name="yes" value="Generuj dokument"/>';
+            print '</form>';
 
+            if(isset($_POST['id_kl']))
+            {
+                $id = $_POST['id_kl'];
+
+                // $nazwa_pl = $id . "_" . date("c");
+                // $pl = fopen("$nazwa_pl", "w");
+
+                $nagl = "Nazwa firmy<br>Adres1<br>Adres2<br>=============<br>NIEFISKALNY<br>=============<br><br>";
+                echo $nagl;
+                // fwrite($pl, $nagl);
+                $mysqli = mysqli_connect("localhost", "root", "", "po");
+                $sql_echo = "SELECT zamowienie.ID_zamowienia, towary.Nazwa_towaru, zamowienie.Dlug, zamowienie.Ilosc FROM zamowienie INNER JOIN towary ON towary.ID_towaru=zamowienie.ID_towaru_zam WHERE zamowienie.ID_klienta_zam=$id;";
+                $cont = mysqli_query($mysqli, $sql_echo); 
+                print '<p>ID: Nazwa towaru: Koszt: Ilosc</p>';
+                // fwrite($pl, "ID: Nazwa towaru: Koszt: Ilosc");
+                while ($row = mysqli_fetch_array($cont))
+                {
+                    print "<p>$row[ID_zamowienia]: $row[Nazwa_towaru]: $row[Dlug]: $row[Ilosc]</p>";
+                    // fwrite($pl, "$row[ID_zamowienia]: $row[Nazwa_towaru]: $row[Dlug]: $row[Ilosc]");
+                }
+                $ftr = "<br>=============<br>" .  date("c") . "<br>";
+                echo $ftr;
+
+
+            }
         }
     }
 ?>

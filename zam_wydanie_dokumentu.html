@@ -1,7 +1,7 @@
 <HTML>
     <HEAD>
       <TITLE>
-        Zamówienie materiału
+        Wydanie materiału potwierdzającego
       </TITLE>
     </HEAD>
   
@@ -9,10 +9,9 @@
         <?php
         include 'zam_php.php';
   
-        echo 'Zamów materiał:';
 
         $inst = Zamowienie::get_instance();
-        $inst->skompletuj_zamowienie();
+        $inst->otrzymanie_dokumentu_potwierdzajacego();
     
 
         ?>
